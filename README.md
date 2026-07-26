@@ -2,6 +2,7 @@
 
 [![ci](https://github.com/tanishq-khandelwal/gitpeek/actions/workflows/ci.yml/badge.svg)](https://github.com/tanishq-khandelwal/gitpeek/actions/workflows/ci.yml)
 [![crates.io](https://img.shields.io/crates/v/gitpeek.svg)](https://crates.io/crates/gitpeek)
+[![npm](https://img.shields.io/npm/v/git-peek.svg)](https://www.npmjs.com/package/git-peek)
 [![license](https://img.shields.io/badge/license-GPL--3.0--or--later-blue.svg)](LICENSE)
 
 Browse, preview, and pop `git stash` entries in a terminal UI. One static binary, no fzf, no libgit2 — just `git` on your PATH.
@@ -24,8 +25,11 @@ j/k move  l files  Enter pop  Ctrl-u/d scroll  q quit
 ## Install
 
 ```sh
-cargo install gitpeek
+cargo install gitpeek     # Rust toolchain
+npm install -g git-peek   # downloads the prebuilt binary for your platform
 ```
+
+(The crate is `gitpeek`; the npm package is `git-peek` because `gitpeek` was already taken there. Both install the same `git-peek` command.)
 
 Or download a prebuilt archive from [Releases](https://github.com/tanishq-khandelwal/gitpeek/releases) and put `git-peek` on your PATH:
 
@@ -35,6 +39,8 @@ mv git-peek /usr/local/bin/
 ```
 
 Prebuilt targets: macOS (Intel + Apple Silicon), Linux (x86_64 + arm64, static musl), Windows (x86_64). Each archive ships a `.sha256` alongside it.
+
+The npm package contains no binary — it's a ~2kB wrapper whose postinstall downloads the release archive for your platform and verifies it against the published checksum before unpacking. So it needs network access to GitHub at install time, and `--ignore-scripts` will skip it (run `node node_modules/git-peek/install.js` yourself in that case).
 
 ## Usage
 
@@ -74,15 +80,22 @@ CI runs fmt, clippy, tests, and a release build on Linux, macOS, and Windows, pl
 
 ## Releasing
 
-1. Bump `version` in `Cargo.toml`.
+1. Bump `version` in **both** `Cargo.toml` and `npm/package.json` (CI fails the release if they and the tag disagree — `install.js` builds its download URL from its own version, so a stale one 404s for every installer).
 2. Commit, then tag and push:
    ```sh
    git tag v0.1.0 && git push --tags
    ```
 
-The release workflow then verifies the tag matches `Cargo.toml`, cross-builds all five targets, uploads the archives + checksums to a GitHub Release, and finally runs `cargo publish`. Publishing is last on purpose: a crates.io version can be yanked but never replaced, so nothing is published unless every target built.
+The release workflow then verifies the tag matches both manifests, cross-builds all five targets, uploads the archives + checksums to a GitHub Release, and only then publishes to crates.io and npm. Publishing is last on purpose: both registries let you unpublish or yank but never replace a version, so nothing ships unless every target built. The npm job additionally runs its own `install.js` against the fresh release and executes the binary before publishing.
 
-One-time setup: add a crates.io API token as the `CARGO_REGISTRY_TOKEN` secret under a `crates-io` GitHub environment.
+One-time setup, two GitHub environments:
+
+| Environment | Secret | Where to get it |
+| --- | --- | --- |
+| `crates-io` | `CARGO_REGISTRY_TOKEN` | crates.io → Account Settings → API Tokens |
+| `npm` | `NPM_TOKEN` | npmjs.com → Access Tokens → Granular, *Read and write* on the `git-peek` package |
+
+To publish npm by hand instead: `cd npm && npm version <ver> && npm publish` (after `npm login`).
 
 ## Not included (deliberately)
 
