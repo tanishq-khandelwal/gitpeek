@@ -1,8 +1,8 @@
 /target
 
 # downloaded at install time by npm/install.js, never committed or published
-/npm/bin/git-peek
-/npm/bin/git-peek.exe
+/npm/bin/lazystash
+/npm/bin/lazystash.exe
 /npm/node_modules
 /npm/*.tgz
 /npm/README.md

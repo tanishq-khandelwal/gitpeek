@@ -1,4 +1,4 @@
-// Downloads the prebuilt git-peek binary for this platform from the matching
+// Downloads the prebuilt lazystash binary for this platform from the matching
 // GitHub Release and verifies it against the published .sha256 before use.
 const { createHash } = require("node:crypto");
 const { execFileSync } = require("node:child_process");
@@ -19,8 +19,8 @@ const platform = `${process.platform}-${process.arch}`;
 const target = TARGETS[platform];
 // Overridable so the download path can be tested without a live release.
 const base =
-  process.env.GITPEEK_RELEASE_BASE ||
-  `https://github.com/tanishq-khandelwal/gitpeek/releases/download/v${version}`;
+  process.env.LAZYSTASH_RELEASE_BASE ||
+  `https://github.com/tanishq-khandelwal/lazystash/releases/download/v${version}`;
 
 async function fetchBuffer(url) {
   const res = await fetch(url, { redirect: "follow" });
@@ -32,11 +32,11 @@ async function main() {
   if (!target) {
     throw new Error(
       `no prebuilt binary for ${platform}. Build from source instead: ` +
-        `cargo install gitpeek`,
+        `cargo install lazystash`,
     );
   }
 
-  const archive = `gitpeek-${target}.tar.gz`;
+  const archive = `lazystash-${target}.tar.gz`;
   const [tgz, checksum] = await Promise.all([
     fetchBuffer(`${base}/${archive}`),
     fetchBuffer(`${base}/${archive}.sha256`),
@@ -50,7 +50,7 @@ async function main() {
 
   const binDir = path.join(__dirname, "bin");
   fs.mkdirSync(binDir, { recursive: true });
-  const tmp = path.join(fs.mkdtempSync(path.join(os.tmpdir(), "gitpeek-")), archive);
+  const tmp = path.join(fs.mkdtempSync(path.join(os.tmpdir(), "lazystash-")), archive);
   fs.writeFileSync(tmp, tgz);
   try {
     // `tar` ships with macOS, Linux, and Windows 10 1803+ - no npm dependency needed.
@@ -59,13 +59,13 @@ async function main() {
     fs.rmSync(path.dirname(tmp), { recursive: true, force: true });
   }
 
-  const bin = path.join(binDir, process.platform === "win32" ? "git-peek.exe" : "git-peek");
+  const bin = path.join(binDir, process.platform === "win32" ? "lazystash.exe" : "lazystash");
   if (!fs.existsSync(bin)) throw new Error(`archive did not contain ${path.basename(bin)}`);
   fs.chmodSync(bin, 0o755);
-  console.log(`gitpeek ${version}: installed ${target}`);
+  console.log(`lazystash ${version}: installed ${target}`);
 }
 
 main().catch((err) => {
-  console.error(`gitpeek install failed: ${err.message}`);
+  console.error(`lazystash install failed: ${err.message}`);
   process.exit(1);
 });

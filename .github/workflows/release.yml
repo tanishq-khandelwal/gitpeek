@@ -57,11 +57,11 @@ jobs:
       - name: Archive
         shell: bash
         run: |
-          bin=git-peek; ext=""
+          bin=lazystash; ext=""
           [ "${{ runner.os }}" = "Windows" ] && ext=".exe"
-          tar czf gitpeek-${{ matrix.target }}.tar.gz \
+          tar czf lazystash-${{ matrix.target }}.tar.gz \
             -C target/${{ matrix.target }}/release "$bin$ext"
-          archive=gitpeek-${{ matrix.target }}.tar.gz
+          archive=lazystash-${{ matrix.target }}.tar.gz
           # sha256sum is missing on macOS, shasum is missing on Windows Git Bash.
           if command -v sha256sum >/dev/null 2>&1; then
             sha256sum "$archive" > "$archive.sha256"
@@ -71,8 +71,8 @@ jobs:
       - uses: softprops/action-gh-release@v3
         with:
           files: |
-            gitpeek-*.tar.gz
-            gitpeek-*.tar.gz.sha256
+            lazystash-*.tar.gz
+            lazystash-*.tar.gz.sha256
           generate_release_notes: true
 
   # Publish last: if any target fails to build, nothing goes to crates.io (which is
@@ -86,8 +86,8 @@ jobs:
       - name: Publish unless this version is already on crates.io
         run: |
           v=$(grep -m1 '^version' Cargo.toml | cut -d'"' -f2)
-          if curl -sfA gitpeek-ci "https://crates.io/api/v1/crates/gitpeek/$v" >/dev/null; then
-            echo "gitpeek $v is already published - skipping"
+          if curl -sfA lazystash-ci "https://crates.io/api/v1/crates/lazystash/$v" >/dev/null; then
+            echo "lazystash $v is already published - skipping"
           else
             cargo publish --token ${{ secrets.CARGO_REGISTRY_TOKEN }}
           fi
@@ -114,8 +114,8 @@ jobs:
         working-directory: npm
         run: |
           v=$(node -p "require('./package.json').version")
-          if npm view "git-peek@$v" version >/dev/null 2>&1; then
-            echo "git-peek $v is already published - skipping"
+          if npm view "lazystash@$v" version >/dev/null 2>&1; then
+            echo "lazystash $v is already published - skipping"
           else
             npm publish --access public
           fi

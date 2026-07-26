@@ -1,17 +1,17 @@
 [package]
-name = "gitpeek"
-version = "0.1.1"
+name = "lazystash"
+version = "0.1.2"
 edition = "2021"
 description = "Browse, preview, and pop git stashes in a terminal UI"
 license = "GPL-3.0-or-later"
 readme = "README.md"
-repository = "https://github.com/tanishq-khandelwal/gitpeek"
-exclude = [".github/", "*.gif", "*.png"]
+repository = "https://github.com/tanishq-khandelwal/lazystash"
+exclude = [".github/", "npm/", "*.gif", "*.png"]
 categories = ["command-line-utilities", "development-tools"]
 keywords = ["git", "stash", "tui", "cli"]
 
 [[bin]]
-name = "git-peek"
+name = "lazystash"
 path = "src/main.rs"
 
 [dependencies]

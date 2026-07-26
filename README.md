@@ -1,8 +1,8 @@
-# gitpeek
+# lazystash
 
-[![ci](https://github.com/tanishq-khandelwal/gitpeek/actions/workflows/ci.yml/badge.svg)](https://github.com/tanishq-khandelwal/gitpeek/actions/workflows/ci.yml)
-[![crates.io](https://img.shields.io/crates/v/gitpeek.svg)](https://crates.io/crates/gitpeek)
-[![npm](https://img.shields.io/npm/v/git-peek.svg)](https://www.npmjs.com/package/git-peek)
+[![ci](https://github.com/tanishq-khandelwal/lazystash/actions/workflows/ci.yml/badge.svg)](https://github.com/tanishq-khandelwal/lazystash/actions/workflows/ci.yml)
+[![crates.io](https://img.shields.io/crates/v/lazystash.svg)](https://crates.io/crates/lazystash)
+[![npm](https://img.shields.io/npm/v/lazystash.svg)](https://www.npmjs.com/package/lazystash)
 [![license](https://img.shields.io/badge/license-GPL--3.0--or--later-blue.svg)](LICENSE)
 
 Browse, preview, and pop `git stash` entries in a terminal UI. One static binary, no fzf, no libgit2 — just `git` on your PATH.
@@ -25,27 +25,27 @@ j/k move  l files  Enter pop  Ctrl-u/d scroll  q quit
 ## Install
 
 ```sh
-cargo install gitpeek     # Rust toolchain
-npm install -g git-peek   # downloads the prebuilt binary for your platform
+cargo install lazystash     # Rust toolchain
+npm install -g lazystash   # downloads the prebuilt binary for your platform
 ```
 
-(The crate is `gitpeek`; the npm package is `git-peek` because `gitpeek` was already taken there. Both install the same `git-peek` command.)
+(The crate is `lazystash`; the npm package is `lazystash` because `lazystash` was already taken there. Both install the same `lazystash` command.)
 
-Or download a prebuilt archive from [Releases](https://github.com/tanishq-khandelwal/gitpeek/releases) and put `git-peek` on your PATH:
+Or download a prebuilt archive from [Releases](https://github.com/tanishq-khandelwal/lazystash/releases) and put `lazystash` on your PATH:
 
 ```sh
-tar xzf gitpeek-aarch64-apple-darwin.tar.gz
-mv git-peek /usr/local/bin/
+tar xzf lazystash-aarch64-apple-darwin.tar.gz
+mv lazystash /usr/local/bin/
 ```
 
 Prebuilt targets: macOS (Intel + Apple Silicon), Linux (x86_64 + arm64, static musl), Windows (x86_64). Each archive ships a `.sha256` alongside it.
 
-The npm package contains no binary — it's a ~2kB wrapper whose postinstall downloads the release archive for your platform and verifies it against the published checksum before unpacking. So it needs network access to GitHub at install time, and `--ignore-scripts` will skip it (run `node node_modules/git-peek/install.js` yourself in that case).
+The npm package contains no binary — it's a ~2kB wrapper whose postinstall downloads the release archive for your platform and verifies it against the published checksum before unpacking. So it needs network access to GitHub at install time, and `--ignore-scripts` will skip it (run `node node_modules/lazystash/install.js` yourself in that case).
 
 ## Usage
 
 ```sh
-git-peek        # or: git peek
+lazystash
 ```
 
 | Key | Action |
@@ -61,7 +61,7 @@ git-peek        # or: git peek
 
 Pop is the only action that mutates anything, and it always confirms first. Conflict output from `git stash pop` is printed after the UI closes, so you can read it.
 
-Requires `git`. Because the binary is named `git-peek`, git picks it up as the `git peek` subcommand automatically — no alias or config needed.
+Requires `git` on your PATH; it is the only runtime dependency.
 
 ## Development
 
@@ -97,7 +97,7 @@ One-time setup — add both as repository secrets (Settings → Secrets and vari
 
 `NPM_TOKEN` must be an *Automation* token. A classic *Publish* token, or a granular token without 2FA bypass, returns `403 ... two-factor authentication ... is required` in CI, because there is no way to answer an OTP prompt there.
 
-The repository must be **public** for the npm channel to work: `install.js` downloads release assets over plain HTTPS, and a private repo's assets require authentication, so every `npm install -g git-peek` would fail.
+The repository must be **public** for the npm channel to work: `install.js` downloads release assets over plain HTTPS, and a private repo's assets require authentication, so every `npm install -g lazystash` would fail.
 
 To publish npm by hand instead: `cd npm && npm version <ver> && npm publish` (after `npm login`).
 

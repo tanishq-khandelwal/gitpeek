@@ -1,9 +1,9 @@
 {
-  "name": "git-peek",
-  "version": "0.1.1",
+  "name": "lazystash",
+  "version": "0.1.2",
   "description": "Browse, preview, and pop git stashes in a terminal UI",
   "bin": {
-    "git-peek": "bin/cli.js"
+    "lazystash": "bin/cli.js"
   },
   "scripts": {
     "postinstall": "node install.js"
@@ -34,7 +34,7 @@
   "license": "GPL-3.0-or-later",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/tanishq-khandelwal/gitpeek.git"
+    "url": "git+https://github.com/tanishq-khandelwal/lazystash.git"
   },
-  "homepage": "https://github.com/tanishq-khandelwal/gitpeek#readme"
+  "homepage": "https://github.com/tanishq-khandelwal/lazystash#readme"
 }

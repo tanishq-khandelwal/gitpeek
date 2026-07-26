@@ -9,12 +9,12 @@ use crossterm::event::{self as term_event, Event};
 use std::time::Duration;
 
 const HELP: &str = "\
-git-peek - browse, preview, and pop git stashes in a terminal UI
+lazystash - browse, preview, and pop git stashes in a terminal UI
 
 USAGE:
-    git-peek            open the stash browser in the current repo
-    git-peek --help
-    git-peek --version
+    lazystash            open the stash browser in the current repo
+    lazystash --help
+    lazystash --version
 
 KEYS:
     j/k, up/down     move selection
@@ -24,7 +24,7 @@ KEYS:
     Enter            pop the selected stash (asks y/n first)
     q, Ctrl-c        quit
 
-Requires `git` on PATH. Also runnable as `git peek`.";
+Requires `git` on PATH.";
 
 fn main() -> Result<()> {
     match std::env::args().nth(1).as_deref() {
@@ -33,7 +33,7 @@ fn main() -> Result<()> {
             return Ok(());
         }
         Some("--version" | "-V") => {
-            println!("git-peek {}", env!("CARGO_PKG_VERSION"));
+            println!("lazystash {}", env!("CARGO_PKG_VERSION"));
             return Ok(());
         }
         _ => {}

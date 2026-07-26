@@ -137,7 +137,7 @@ mod repo_tests {
 
     /// Two stashes: stash@{0} touches one file, stash@{1} touches two.
     fn scratch_repo() -> PathBuf {
-        let dir = std::env::temp_dir().join(format!("gitpeek-test-{}", std::process::id()));
+        let dir = std::env::temp_dir().join(format!("lazystash-test-{}", std::process::id()));
         let _ = fs::remove_dir_all(&dir);
         fs::create_dir_all(&dir).unwrap();
         git(&dir, &["init", "-q", "--initial-branch=main", "."]);
