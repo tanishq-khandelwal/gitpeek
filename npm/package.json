@@ -1,6 +1,6 @@
 {
   "name": "git-peek",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Browse, preview, and pop git stashes in a terminal UI",
   "bin": {
     "git-peek": "bin/cli.js"

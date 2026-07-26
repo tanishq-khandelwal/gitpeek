@@ -143,6 +143,9 @@ mod repo_tests {
         git(&dir, &["init", "-q", "--initial-branch=main", "."]);
         git(&dir, &["config", "user.email", "test@example.com"]);
         git(&dir, &["config", "user.name", "test"]);
+        // Windows runners default to autocrlf=true, which would rewrite the LF
+        // fixtures as CRLF and break the byte-exact assertions below.
+        git(&dir, &["config", "core.autocrlf", "false"]);
         fs::write(dir.join("a.txt"), "one\n").unwrap();
         fs::write(dir.join("b.txt"), "x\n").unwrap();
         git(&dir, &["add", "-A"]);

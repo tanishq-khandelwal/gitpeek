@@ -1,6 +1,6 @@
 [package]
 name = "gitpeek"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 description = "Browse, preview, and pop git stashes in a terminal UI"
 license = "GPL-3.0-or-later"
