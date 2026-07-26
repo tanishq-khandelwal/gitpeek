@@ -74,7 +74,6 @@ jobs:
   publish-crates:
     needs: build
     runs-on: ubuntu-latest
-    environment: crates-io
     steps:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
@@ -85,10 +84,6 @@ jobs:
   publish-npm:
     needs: build
     runs-on: ubuntu-latest
-    environment: npm
-    permissions:
-      contents: read
-      id-token: write # required by `npm publish --provenance`
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -104,6 +99,6 @@ jobs:
           ./bin/cli.js --version
       - name: Publish
         working-directory: npm
-        run: npm publish --provenance --access public
+        run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

@@ -88,12 +88,14 @@ CI runs fmt, clippy, tests, and a release build on Linux, macOS, and Windows, pl
 
 The release workflow then verifies the tag matches both manifests, cross-builds all five targets, uploads the archives + checksums to a GitHub Release, and only then publishes to crates.io and npm. Publishing is last on purpose: both registries let you unpublish or yank but never replace a version, so nothing ships unless every target built. The npm job additionally runs its own `install.js` against the fresh release and executes the binary before publishing.
 
-One-time setup, two GitHub environments:
+One-time setup — add both as repository secrets (Settings → Secrets and variables → Actions):
 
-| Environment | Secret | Where to get it |
-| --- | --- | --- |
-| `crates-io` | `CARGO_REGISTRY_TOKEN` | crates.io → Account Settings → API Tokens |
-| `npm` | `NPM_TOKEN` | npmjs.com → Access Tokens → Granular, *Read and write* on the `git-peek` package |
+| Secret | Where to get it |
+| --- | --- |
+| `CARGO_REGISTRY_TOKEN` | crates.io → Account Settings → API Tokens |
+| `NPM_TOKEN` | npmjs.com → Access Tokens → Granular, *Read and write* on the `git-peek` package |
+
+The repository must be **public** for the npm channel to work: `install.js` downloads release assets over plain HTTPS, and a private repo's assets require authentication, so every `npm install -g git-peek` would fail.
 
 To publish npm by hand instead: `cd npm && npm version <ver> && npm publish` (after `npm login`).
 
