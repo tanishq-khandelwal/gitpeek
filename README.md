@@ -9,7 +9,7 @@ Browse, preview, and pop `git stash` entries in a terminal UI. One static binary
 
 Left pane: your stashes. Right pane: the live, colorized diff of whatever's highlighted. Drill into a single stash's files, then pop it once you've found the one you wanted.
 
-![lazystash walking a stash list, showing each diff, drilling into files, and confirming a pop](https://raw.githubusercontent.com/tanishq-khandelwal/lazystash/main/assets/demo.gif)
+![lazystash walking a stash list, showing each diff, drilling into files, and confirming a pop](assets/demo.gif)
 
 ## Install
 
