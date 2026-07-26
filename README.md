@@ -9,18 +9,7 @@ Browse, preview, and pop `git stash` entries in a terminal UI. One static binary
 
 Left pane: your stashes. Right pane: the live, colorized diff of whatever's highlighted. Drill into a single stash's files, then pop it once you've found the one you wanted.
 
-```
-┌git stashes───────────────────────────┐┌diff─────────────────────────────────────────┐
-│stash@{0}  [main] second wip          ││diff --git a/a.txt b/a.txt                   │
-│stash@{1}  [main] first wip           ││index 5626abf..f719efd 100644                │
-│                                      ││--- a/a.txt                                  │
-│                                      ││+++ b/a.txt                                  │
-│                                      ││@@ -1 +1 @@                                  │
-│                                      ││-one                                         │
-│                                      ││+two                                         │
-└──────────────────────────────────────┘└─────────────────────────────────────────────┘
-j/k move  l files  Enter pop  Ctrl-u/d scroll  q quit
-```
+![lazystash walking a stash list, showing each diff, drilling into files, and confirming a pop](https://raw.githubusercontent.com/tanishq-khandelwal/lazystash/main/assets/demo.gif)
 
 ## Install
 

@@ -50,6 +50,18 @@ Two things to know if you add tests there:
 | `src/main.rs` | args, terminal setup/teardown, run loop |
 | `npm/` | the npm wrapper that downloads a prebuilt binary |
 
+## Regenerating the demo
+
+The README GIF is scripted, not hand-recorded, so it can be rebuilt whenever the UI changes. It needs [`vhs`](https://github.com/charmbracelet/vhs) (`brew install vhs`):
+
+```sh
+cargo build --release
+./demo/seed.sh                      # synthetic repo with five fake stashes in /tmp/lazystash-demo
+PATH="$PWD/target/release:$PATH" vhs demo/demo.tape
+```
+
+That writes `assets/demo.gif`. The seed repo is entirely synthetic on purpose — never record a demo against a real work repository, since stash messages and diffs end up published in the README.
+
 ## Scope
 
 The tool deliberately stays small: browse stashes, read their diffs, pop one. Syntax highlighting, `apply`/`drop`/`branch` actions, stash creation, fuzzy filtering, and mouse support are all out of scope — please open an issue to discuss before building any of them.
