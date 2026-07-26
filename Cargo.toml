@@ -1,0 +1,25 @@
+[package]
+name = "gitpeek"
+version = "0.1.0"
+edition = "2021"
+description = "Browse, preview, and pop git stashes in a terminal UI"
+license = "GPL-3.0-or-later"
+readme = "README.md"
+repository = "https://github.com/tanishq-khandelwal/gitpeek"
+exclude = [".github/", "*.gif", "*.png"]
+categories = ["command-line-utilities", "development-tools"]
+keywords = ["git", "stash", "tui", "cli"]
+
+[[bin]]
+name = "git-peek"
+path = "src/main.rs"
+
+[dependencies]
+ratatui = "0.29"
+crossterm = "0.28"
+anyhow = "1"
+
+[profile.release]
+strip = true
+lto = true
+opt-level = "z"
