@@ -1,7 +1,10 @@
 name: release
+# Publishing happens only on main. Work lands on develop; a release is a
+# develop -> main merge, and the version in the manifests decides what ships.
 on:
   push:
-    tags: ["v*"]
+    branches: [main]
+  workflow_dispatch:
 permissions:
   contents: write
 
@@ -9,24 +12,25 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  # Refuse to ship if the tag and the manifests disagree - a mismatch would publish
-  # the wrong version, and npm/install.js derives its download URL from its own
-  # version field, so a stale one would 404 for every installer.
-  check-version:
+  # The manifests must agree: npm/install.js builds its download URL from its
+  # own version field, so a stale one would 404 for every installer.
+  version:
     runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.read.outputs.version }}
     steps:
       - uses: actions/checkout@v7
-      - shell: bash
+      - id: read
+        shell: bash
         run: |
-          tag="${GITHUB_REF_NAME#v}"
           cargo_v=$(grep -m1 '^version' Cargo.toml | cut -d'"' -f2)
           npm_v=$(node -p "require('./npm/package.json').version")
-          echo "tag=$tag cargo=$cargo_v npm=$npm_v"
-          [ "$tag" = "$cargo_v" ] || { echo "::error::tag v$tag != Cargo.toml $cargo_v"; exit 1; }
-          [ "$tag" = "$npm_v" ] || { echo "::error::tag v$tag != npm/package.json $npm_v"; exit 1; }
+          echo "cargo=$cargo_v npm=$npm_v"
+          [ "$cargo_v" = "$npm_v" ] || { echo "::error::Cargo.toml $cargo_v != npm/package.json $npm_v"; exit 1; }
+          echo "version=$cargo_v" >> "$GITHUB_OUTPUT"
 
   build:
-    needs: check-version
+    needs: version
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -59,9 +63,8 @@ jobs:
         run: |
           bin=lazystash; ext=""
           [ "${{ runner.os }}" = "Windows" ] && ext=".exe"
-          tar czf lazystash-${{ matrix.target }}.tar.gz \
-            -C target/${{ matrix.target }}/release "$bin$ext"
           archive=lazystash-${{ matrix.target }}.tar.gz
+          tar czf "$archive" -C target/${{ matrix.target }}/release "$bin$ext"
           # sha256sum is missing on macOS, shasum is missing on Windows Git Bash.
           if command -v sha256sum >/dev/null 2>&1; then
             sha256sum "$archive" > "$archive.sha256"
@@ -70,32 +73,34 @@ jobs:
           fi
       - uses: softprops/action-gh-release@v3
         with:
+          tag_name: v${{ needs.version.outputs.version }}
           files: |
             lazystash-*.tar.gz
             lazystash-*.tar.gz.sha256
           generate_release_notes: true
 
-  # Publish last: if any target fails to build, nothing goes to crates.io (which is
-  # permanent - versions can only be yanked, never replaced).
+  # Publish after every target built: a registry version can be yanked or
+  # unpublished but never replaced, so a partial release must not ship.
   publish-crates:
-    needs: build
+    needs: [version, build]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
       - uses: dtolnay/rust-toolchain@stable
       - name: Publish unless this version is already on crates.io
+        env:
+          V: ${{ needs.version.outputs.version }}
         run: |
-          v=$(grep -m1 '^version' Cargo.toml | cut -d'"' -f2)
-          if curl -sfA lazystash-ci "https://crates.io/api/v1/crates/lazystash/$v" >/dev/null; then
-            echo "lazystash $v is already published - skipping"
+          if curl -sfA lazystash-ci "https://crates.io/api/v1/crates/lazystash/$V" >/dev/null; then
+            echo "lazystash $V is already published - skipping"
           else
             cargo publish --token ${{ secrets.CARGO_REGISTRY_TOKEN }}
           fi
 
-  # Also after build: the npm package has no binary in it - its postinstall
+  # Also after build: the npm package carries no binary - its postinstall
   # downloads the release archive, so the assets must exist first.
   publish-npm:
-    needs: build
+    needs: [version, build]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -112,12 +117,12 @@ jobs:
           node bin/cli.js --version
       - name: Publish unless this version is already on npm
         working-directory: npm
+        env:
+          V: ${{ needs.version.outputs.version }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
-          v=$(node -p "require('./package.json').version")
-          if npm view "lazystash@$v" version >/dev/null 2>&1; then
-            echo "lazystash $v is already published - skipping"
+          if npm view "lazystash@$V" version >/dev/null 2>&1; then
+            echo "lazystash $V is already published - skipping"
           else
             npm publish --access public
           fi
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

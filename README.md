@@ -74,30 +74,9 @@ Layout: `git.rs` (all `git` shell-outs + parsing), `app.rs` (state + transitions
 
 The test suite creates a real scratch repo in your temp dir, makes two stashes, and exercises the git layer and the state machine against it — including an actual `pop`. Repo-backed tests all live in a single `#[test]` because they `set_current_dir`, which is process-global.
 
-CI runs fmt, clippy, tests, and a release build on Linux, macOS, and Windows, plus `cargo publish --dry-run`.
+CI runs fmt, clippy, tests, and a release build on Linux, macOS, and Windows for every pull request.
 
-## Releasing
-
-1. Bump `version` in **both** `Cargo.toml` and `npm/package.json` (CI fails the release if they and the tag disagree — `install.js` builds its download URL from its own version, so a stale one 404s for every installer).
-2. Commit, then tag and push:
-   ```sh
-   git tag v0.1.0 && git push --tags
-   ```
-
-The release workflow then verifies the tag matches both manifests, cross-builds all five targets, uploads the archives + checksums to a GitHub Release, and only then publishes to crates.io and npm. Publishing is last on purpose: both registries let you unpublish or yank but never replace a version, so nothing ships unless every target built. The npm job additionally runs its own `install.js` against the fresh release and executes the binary before publishing.
-
-One-time setup — add both as repository secrets (Settings → Secrets and variables → Actions):
-
-| Secret | Where to get it |
-| --- | --- |
-| `CARGO_REGISTRY_TOKEN` | crates.io → Account Settings → API Tokens |
-| `NPM_TOKEN` | npmjs.com → Access Tokens → Classic → **Automation** |
-
-`NPM_TOKEN` must be an *Automation* token. A classic *Publish* token, or a granular token without 2FA bypass, returns `403 ... two-factor authentication ... is required` in CI, because there is no way to answer an OTP prompt there.
-
-The repository must be **public** for the npm channel to work: `install.js` downloads release assets over plain HTTPS, and a private repo's assets require authentication, so every `npm install -g lazystash` would fail.
-
-To publish npm by hand instead: `cd npm && npm version <ver> && npm publish` (after `npm login`).
+Pull requests target `develop`, which is the default branch. See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Not included (deliberately)
 
