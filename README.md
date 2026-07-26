@@ -26,10 +26,8 @@ j/k move  l files  Enter pop  Ctrl-u/d scroll  q quit
 
 ```sh
 cargo install lazystash     # Rust toolchain
-npm install -g lazystash   # downloads the prebuilt binary for your platform
+npm install -g lazystash    # downloads the prebuilt binary for your platform
 ```
-
-(The crate is `lazystash`; the npm package is `lazystash` because `lazystash` was already taken there. Both install the same `lazystash` command.)
 
 Or download a prebuilt archive from [Releases](https://github.com/tanishq-khandelwal/lazystash/releases) and put `lazystash` on your PATH:
 
