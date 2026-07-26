@@ -93,7 +93,9 @@ One-time setup — add both as repository secrets (Settings → Secrets and vari
 | Secret | Where to get it |
 | --- | --- |
 | `CARGO_REGISTRY_TOKEN` | crates.io → Account Settings → API Tokens |
-| `NPM_TOKEN` | npmjs.com → Access Tokens → Granular, *Read and write* on the `git-peek` package |
+| `NPM_TOKEN` | npmjs.com → Access Tokens → Classic → **Automation** |
+
+`NPM_TOKEN` must be an *Automation* token. A classic *Publish* token, or a granular token without 2FA bypass, returns `403 ... two-factor authentication ... is required` in CI, because there is no way to answer an OTP prompt there.
 
 The repository must be **public** for the npm channel to work: `install.js` downloads release assets over plain HTTPS, and a private repo's assets require authentication, so every `npm install -g git-peek` would fail.
 
