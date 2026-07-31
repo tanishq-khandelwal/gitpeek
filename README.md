@@ -7,9 +7,9 @@
 
 Browse, preview, and pop `git stash` entries in a terminal UI. One static binary, no fzf, no libgit2 — just `git` on your PATH.
 
-Left pane: your stashes. Right pane: the live, colorized diff of whatever's highlighted. Drill into a single stash's files, then pop it once you've found the one you wanted.
+Left pane: your stashes, always visible. Right pane drills down with you: a stash's live colorized diff, then its file tree (with +/- line counts), then a single file's diff — pop once you've found the one you wanted.
 
-![lazystash walking a stash list, showing each diff, drilling into files, and confirming a pop](assets/demo.gif)
+![lazystash walking a stash list, drilling into a multi-file stash's file tree, scrolling a file's diff, popping a single file out of the stash, and confirming a full pop](assets/demo.gif)
 
 ## Install
 
@@ -37,12 +37,15 @@ lazystash
 
 | Key | Action |
 | --- | --- |
-| `j` / `k`, `↑` / `↓` | move selection |
-| `l` / `→` | drill into the selected stash's files |
-| `h` / `←`, `Esc` | back to the stash list |
-| `Ctrl-d` / `Ctrl-u`, `PgDn` / `PgUp` | scroll the diff |
+| `j` / `k`, `↑` / `↓` | move selection — scrolls instead while viewing a file's diff |
+| `l` / `→` | drill in: stash → file tree → file diff |
+| `h` / `←`, `Esc` | back out a level |
+| `Ctrl-d` / `Ctrl-u`, `PgDn` / `PgUp` | scroll |
 | `Enter` | pop the selected stash (asks `y`/`n` first) |
+| `p` | in the file tree or a file's diff: pop *just that file*, leaving the rest stashed |
 | `q`, `Ctrl-c` | quit |
+
+Mouse: wheel scrolls whichever pane it's over (stash list or diff/tree); clicking a file in the tree opens its diff. Support varies by terminal — the keyboard bindings above always work.
 
 `--help` and `--version` print and exit without starting the UI. With no stashes it prints `No stashes.` and exits 0; outside a git repo it prints git's error and exits 1.
 

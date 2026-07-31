@@ -3,7 +3,7 @@ Output assets/demo.gif
 Set Shell bash
 Set FontSize 15
 Set Width 1200
-Set Height 470
+Set Height 480
 Set Padding 12
 Set Theme "Catppuccin Mocha"
 Set Framerate 24
@@ -18,35 +18,54 @@ Show
 Type "lazystash"
 Sleep 400ms
 Enter
-Sleep 2s
+Sleep 1800ms
 
 # walk the stash list; the diff pane follows the selection
 Down
-Sleep 1200ms
+Sleep 900ms
 Down
 Sleep 1200ms
-Down
-Sleep 1500ms
 
-# scroll the diff
-Ctrl+d
+# drill into "retry + abort for api client" - a multi-file stash - and see its
+# file tree: paths grouped by directory, each tagged with +added -deleted
+Right
+Sleep 1800ms
+
+# open the first file's diff
+Right
 Sleep 1200ms
-Ctrl+u
+
+# scroll it with plain arrow keys
+Down
+Sleep 250ms
+Down
+Sleep 250ms
+Down
+Sleep 250ms
+Sleep 700ms
+Up
+Sleep 250ms
+Up
+Sleep 800ms
+
+# pop just this one file, leaving the other stashed (declined here, so the
+# seeded demo repo stays reusable without needing to be reseeded)
+Type "p"
+Sleep 1300ms
+Type "n"
 Sleep 900ms
 
-# drill into that stash's files, step through them
-Right
-Sleep 1500ms
-Down
-Sleep 1500ms
+# back out: file diff -> tree -> stash list
+Left
+Sleep 1200ms
 Left
 Sleep 1200ms
 
-# offer to pop, then back out - nothing is mutated in the demo
+# popping the whole stash still works the same way
 Enter
-Sleep 1800ms
+Sleep 1500ms
 Type "n"
-Sleep 1200ms
+Sleep 900ms
 
 Type "q"
-Sleep 800ms
+Sleep 600ms
