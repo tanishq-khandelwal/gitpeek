@@ -1,4 +1,5 @@
 /target
+/.claude/settings.local.json
 
 # downloaded at install time by npm/install.js, never committed or published
 /npm/bin/lazystash

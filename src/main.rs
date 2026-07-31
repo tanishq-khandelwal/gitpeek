@@ -5,7 +5,10 @@ mod ui;
 
 use anyhow::Result;
 use app::App;
-use crossterm::event::{self as term_event, Event};
+use crossterm::event::{self as term_event, DisableMouseCapture, EnableMouseCapture, Event};
+use crossterm::execute;
+use ratatui::layout::Rect;
+use std::io::stdout;
 use std::time::Duration;
 
 const HELP: &str = "\
@@ -17,11 +20,12 @@ USAGE:
     lazystash --version
 
 KEYS:
-    j/k, up/down     move selection
-    l/right          drill into the stash's files
-    h/left, Esc      back to the stash list
-    Ctrl-d/Ctrl-u    scroll the diff (also PgDn/PgUp)
+    j/k, up/down     move selection (scrolls instead, while viewing a file's diff)
+    l/right          drill in: stash -> file tree -> file diff
+    h/left, Esc      go back a level
+    Ctrl-d/Ctrl-u    scroll (also PgDn/PgUp)
     Enter            pop the selected stash (asks y/n first)
+    p                pop just the selected file, leaving the rest stashed (in file tree/diff)
     q, Ctrl-c        quit
 
 Requires `git` on PATH.";
@@ -48,7 +52,9 @@ fn main() -> Result<()> {
     let mut app = App::new(stashes);
     // ratatui::init installs a panic hook that restores the terminal first.
     let mut terminal = ratatui::init();
+    execute!(stdout(), EnableMouseCapture)?;
     let result = run(&mut terminal, &mut app);
+    execute!(stdout(), DisableMouseCapture).ok();
     ratatui::restore();
 
     result?;
@@ -62,10 +68,16 @@ fn run(terminal: &mut ratatui::DefaultTerminal, app: &mut App) -> Result<()> {
     while !app.should_quit {
         terminal.draw(|f| ui::render(f, app))?;
         if term_event::poll(Duration::from_millis(100))? {
-            if let Event::Key(key) = term_event::read()? {
-                if key.kind == term_event::KeyEventKind::Press {
+            match term_event::read()? {
+                Event::Key(key) if key.kind == term_event::KeyEventKind::Press => {
                     event::handle(key, app);
                 }
+                Event::Mouse(mouse) => {
+                    let size = terminal.size()?;
+                    let area = Rect::new(0, 0, size.width, size.height);
+                    event::handle_mouse(mouse, app, area);
+                }
+                _ => {}
             }
         }
     }

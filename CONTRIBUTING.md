@@ -64,6 +64,6 @@ That writes `assets/demo.gif`. The seed repo is entirely synthetic on purpose �
 
 ## Scope
 
-The tool deliberately stays small: browse stashes, read their diffs, pop one. Syntax highlighting, `apply`/`drop`/`branch` actions, stash creation, fuzzy filtering, and mouse support are all out of scope — please open an issue to discuss before building any of them.
+The tool deliberately stays small: browse stashes, read their diffs, pop one (or just one file out of one). Syntax highlighting, `apply`/`drop`/`branch` actions, stash creation, and fuzzy filtering are all out of scope — please open an issue to discuss before building any of them.
 
 There is one hard rule: `pop` is the only operation that may mutate a repository, and it must always confirm first.
