@@ -1,6 +1,6 @@
 {
   "name": "lazystash",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Browse, preview, and pop git stashes in a terminal UI",
   "bin": {
     "lazystash": "bin/cli.js"
