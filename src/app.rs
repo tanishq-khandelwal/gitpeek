@@ -106,7 +106,8 @@ impl App {
         if self.stashes.is_empty() {
             return;
         }
-        self.list_i = (self.list_i as isize + delta).clamp(0, self.stashes.len() as isize - 1) as usize;
+        self.list_i =
+            (self.list_i as isize + delta).clamp(0, self.stashes.len() as isize - 1) as usize;
         self.back_to_list();
     }
 
@@ -186,7 +187,10 @@ impl App {
         };
         match git::pop_file(&reference, &path, &self.files) {
             Ok(text) => {
-                self.popped = Some(format!("Popped {path} from {reference}\n{}", text.trim_end()));
+                self.popped = Some(format!(
+                    "Popped {path} from {reference}\n{}",
+                    text.trim_end()
+                ));
                 self.should_quit = true;
             }
             Err(e) => self.status = Some(e.to_string()),

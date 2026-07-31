@@ -11,7 +11,9 @@ pub fn handle_mouse(mouse: MouseEvent, app: &mut App, area: Rect) {
         MouseEventKind::ScrollUp if right.contains(pos) => app.scroll_by(-3),
         MouseEventKind::ScrollDown if left.contains(pos) => app.select_stash(1),
         MouseEventKind::ScrollUp if left.contains(pos) => app.select_stash(-1),
-        MouseEventKind::Down(MouseButton::Left) if app.mode == Mode::Tree && right.contains(pos) => {
+        MouseEventKind::Down(MouseButton::Left)
+            if app.mode == Mode::Tree && right.contains(pos) =>
+        {
             open_clicked_file(mouse, app, right);
         }
         _ => {}

@@ -272,7 +272,10 @@ mod repo_tests {
         assert_eq!(app.mode, Mode::Tree);
         assert_eq!(app.files, vec!["a.txt", "b.txt"]);
         assert_eq!(app.file_stats.len(), 2);
-        assert!(app.diff.is_empty(), "tree view has no diff until a file is opened");
+        assert!(
+            app.diff.is_empty(),
+            "tree view has no diff until a file is opened"
+        );
 
         app.select(1);
         assert_eq!(app.file_i, 1);
@@ -347,7 +350,8 @@ mod repo_tests {
 
     /// One stash touching two files, for testing `pop_file`'s partial-pop behavior.
     fn two_file_stash_repo() -> PathBuf {
-        let dir = std::env::temp_dir().join(format!("lazystash-popfile-test-{}", std::process::id()));
+        let dir =
+            std::env::temp_dir().join(format!("lazystash-popfile-test-{}", std::process::id()));
         let _ = fs::remove_dir_all(&dir);
         fs::create_dir_all(&dir).unwrap();
         git(&dir, &["init", "-q", "--initial-branch=main", "."]);

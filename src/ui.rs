@@ -43,8 +43,7 @@ pub fn build_tree(files: &[String], stats: &[(u32, u32)]) -> Vec<TreeRow> {
 /// Left/right pane rects, shared with mouse hit-testing so scroll/click events
 /// land on whichever pane the cursor is actually over.
 pub fn panes(area: Rect) -> (Rect, Rect) {
-    let [main, _footer] =
-        Layout::vertical([Constraint::Min(0), Constraint::Length(1)]).areas(area);
+    let [main, _footer] = Layout::vertical([Constraint::Min(0), Constraint::Length(1)]).areas(area);
     Layout::horizontal([Constraint::Percentage(40), Constraint::Percentage(60)])
         .areas(main)
         .into()
@@ -118,7 +117,9 @@ pub fn render(f: &mut Frame, app: &App) {
 
     let keys = match app.mode {
         Mode::List => "j/k move  l files  Enter pop stash  Ctrl-u/d scroll  q quit",
-        Mode::Tree => "j/k file  l open  p pop file  h back  Enter pop stash  Ctrl-u/d scroll  q quit",
+        Mode::Tree => {
+            "j/k file  l open  p pop file  h back  Enter pop stash  Ctrl-u/d scroll  q quit"
+        }
         Mode::FileDiff => "j/k/Ctrl-u/d scroll  p pop file  h back  Enter pop stash  q quit",
     };
     let footer_text = match &app.status {
